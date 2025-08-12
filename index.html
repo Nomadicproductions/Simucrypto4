@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CryptoSim Browser</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .bank-logo-inline, .exchange-logo, .social-logo, .news-logo, .marketcap-logo {
+      width: 128px !important; height: 128px !important; object-fit: contain;
+    }
+    .marketcap-coin-logo { width: 48px !important; height: 48px !important; object-fit: contain; vertical-align: middle; }
+  </style>
+</head>
+<body>
+<div id="browser">
+  <div id="searchbar">
+    <input type="text" id="searchInput" placeholder="Search the web...">
+    <button onclick="handleSearch()">Search</button>
+    <span id="settings-container">
+      <span id="settings-icon" title="Settings">&#9881;</span>
+      <span id="settings-dropdown" style="display:none;">
+        <button id="reset-game-btn">Reset Game</button>
+      </span>
+    </span>
+    <span id="datetime"></span>
+  </div>
+
+  <div id="nav">
+    <button onclick="showSection('results')">Home</button>
+    <button onclick="showSection('bank')">Bank</button>
+    <button onclick="showSection('exchange')">Exchange</button>
+    <button onclick="showSection('social')">Social Media</button>
+    <button onclick="showSection('news')">News</button>
+    <button onclick="showSection('marketcap')">MarketCap</button>
+    <button onclick="showSection('platformer')">Platformer</button>
+  </div>
+
+  <!-- Homepage -->
+  <div id="results">
+    <div class="main-link bank-main-link" onclick="showSection('bank')">
+      <img src="assets/file_000000000348622fa8844bb639749a11.png" alt="Bankerz Logo" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">Open a bank account – Bankerz</span>
+        <span class="main-link-desc">Start with $1000 in your virtual bank account to fund your crypto journey.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('exchange')">
+      <img src="assets/file_00000000518861fd866cd0928b414088.png" alt="CoinFlip Exchange Logo" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">Create exchange profile – CoinFlip Exchange</span>
+        <span class="main-link-desc">Transfer funds and trade fictional coins on the exchange.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('social')">
+      <img src="assets/file_0000000064b061fd8c99a60b0e9d5df0.png" alt="CryptoChat Logo" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">Visit crypto social media – Cryptochat</span>
+        <span class="main-link-desc">Post your hot takes and see the latest community (and NPC) chatter.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('news')">
+      <img src="assets/file_000000004b5061f7943d721951a4aae9.png" alt="BlockBuzz Logo" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">Check crypto news – BlockBuzz</span>
+        <span class="main-link-desc">Read simulated headlines and market rumors that affect prices.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('marketcap')">
+      <img src="assets/file_000000003b1c61f8aee04dbbc167682c.png" alt="MarketCap Logo" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">Visit CryptosMarketCap – Price History Charts</span>
+        <span class="main-link-desc">View historical price charts for all coins, powered by Chart.js.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('whitepaper-solvex')">
+      <img src="assets/file_00000000c2d4622fb9f7ff0b3e1dfbe2.png" alt="Solvex" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">Solvex Whitepaper</span>
+        <span class="main-link-desc">Technical overview, tokenomics, and roadmap for the SVX blockchain.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('whitepaper-neurax')">
+      <img src="assets/file_000000002e8061fbb00adf493d6a1134.png" alt="NeuraX" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">NeuraX Whitepaper</span>
+        <span class="main-link-desc">Explore the NeuraX protocol and its innovations for decentralized AI.</span>
+      </span>
+    </div>
+    <div class="main-link" onclick="showSection('whitepaper-corechain')">
+      <img src="assets/C_20250615_233410_0000.png" alt="CoreChain" class="bank-logo-inline" />
+      <span class="bank-main-link-text">
+        <span class="main-link-title">CoreChain Whitepaper</span>
+        <span class="main-link-desc">Discover the technology and economics of CoreChain.</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Bank Section -->
+  <div id="bank" style="display:none;">
+    <div id="bank-landing">
+      <div id="bank-auth-buttons">
+        <button onclick="showSection('signup')">Create Account</button>
+        <button onclick="showLoginPrompt()">Login</button>
+      </div>
+      <div id="bank-login-form" style="display:none; margin-top:10px;">
+        <input id="loginAccountId" placeholder="Enter Account ID" />
+        <button onclick="bankLogin()">Login</button>
+      </div>
+    </div>
+    <div id="bank-account-summary" style="display:none;">
+      <h3>Welcome, <span id="accountName"></span></h3>
+      <div>Account ID: <span id="accountId"></span></div>
+      <div>Bank Account #: <span id="bankAccountNumber"></span></div>
+      <div>Residence: <span id="accountResidence"></span></div>
+      <div>Age: <span id="accountAge"></span></div>
+      <div>Balance: $<span id="bankBalance"></span></div>
+      <div>
+        Credit: <span id="creditBalance"></span> |
+        Debit: <span id="debitBalance"></span>
+      </div>
+      <button onclick="showWithdrawModal()">Withdraw</button>
+      <button onclick="showDepositModal()">Deposit</button>
+      <button onclick="showSendMoneyModal()">Send Money</button>
+      <button onclick="showFullTransactionHistory()">Transaction History</button>
+      <button onclick="bankLogout()">Logout</button>
+      <div id="transaction-window">
+        <div class="transaction-header">
+          Recent Transactions
+        </div>
+        <div id="transaction-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exchange Section -->
+  <div id="exchange" style="display:none;">
+    <div class="exchange-header-row">
+      <img src="assets/file_00000000518861fd866cd0928b414088.png" alt="CoinFlip Exchange Logo" class="exchange-logo" />
+      <span class="exchange-title">CoinFlip Exchange</span>
+      <span>Exchange Balance: $<span id="exchangeBalance">0.00</span></span>
+      <button class="exchange-btn" onclick="showExchangeSendBankModal()">Send to Bank</button>
+    </div>
+    <div class="exchange-flex">
+      <div class="exchange-left">
+        <h4>Market</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Coin</th>
+              <th>Price</th>
+              <th>Trade</th>
+            </tr>
+          </thead>
+          <tbody id="coinMarket"></tbody>
+        </table>
+      </div>
+      <div class="exchange-right">
+        <h4>Portfolio</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Coin</th>
+              <th>Owned</th>
+              <th>Price</th>
+              <th>Total Value</th>
+            </tr>
+          </thead>
+          <tbody id="portfolioTable"></tbody>
+        </table>
+        <div style="margin-top:10px;">
+          Portfolio Value: $<span id="portfolioValue">0.00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Media Section -->
+  <div id="social" style="display:none;">
+    <div class="social-header-row">
+      <img src="assets/file_0000000064b061fd8c99a60b0e9d5df0.png" alt="CryptoChat Logo" class="social-logo" />
+      <span class="social-title">CryptoChat</span>
+    </div>
+    <div class="social-compose">
+      <input type="text" id="postInput" placeholder="What's on your mind?" maxlength="160" />
+      <button class="social-btn" onclick="postMessage()">Post</button>
+    </div>
+    <div id="feed"></div>
+  </div>
+
+  <!-- News / BlockBuzz Section -->
+  <div id="news" style="display:none;">
+    <div class="news-header-row">
+      <img src="assets/file_000000004b5061f7943d721951a4aae9.png" alt="BlockBuzz Logo" class="news-logo" />
+      <span class="news-title">BlockBuzz News</span>
+    </div>
+    <div id="newsFeed"></div>
+  </div>
+
+  <!-- MarketCap Section -->
+  <div id="marketcap" style="display:none;">
+    <div class="marketcap-header-row">
+      <img src="assets/file_000000003b1c61f8aee04dbbc167682c.png" alt="MarketCap Logo" class="marketcap-logo" />
+      <span class="marketcap-title">CryptosMarketCap</span>
+    </div>
+    <div id="marketcap-list">
+      <!-- Example for 3 coins; render dynamically as needed -->
+      <div class="marketcap-chart-card">
+        <div class="marketcap-chart-header">
+          <img src="assets/coin1.png" alt="Coin 1" class="marketcap-coin-logo" />
+          <span class="marketcap-chart-coin-name">Solvex</span>
+          <span class="marketcap-chart-coin-price">$123.45</span>
+          <span class="marketcap-chart-coin-change up">+2.3%</span>
+          <span class="marketcap-coin-owned">(Owned: 10)</span>
+        </div>
+        <canvas class="marketcap-chart-canvas" id="chart-solvex"></canvas>
+      </div>
+      <div class="marketcap-chart-card">
+        <div class="marketcap-chart-header">
+          <img src="assets/coin2.png" alt="Coin 2" class="marketcap-coin-logo" />
+          <span class="marketcap-chart-coin-name">NeuraX</span>
+          <span class="marketcap-chart-coin-price">$47.89</span>
+          <span class="marketcap-chart-coin-change down">-0.9%</span>
+          <span class="marketcap-coin-owned">(Owned: 24)</span>
+        </div>
+        <canvas class="marketcap-chart-canvas" id="chart-neurax"></canvas>
+      </div>
+      <div class="marketcap-chart-card">
+        <div class="marketcap-chart-header">
+          <img src="assets/coin3.png" alt="Coin 3" class="marketcap-coin-logo" />
+          <span class="marketcap-chart-coin-name">CoreChain</span>
+          <span class="marketcap-chart-coin-price">$201.67</span>
+          <span class="marketcap-chart-coin-change up">+1.8%</span>
+          <span class="marketcap-coin-owned">(Owned: 5)</span>
+        </div>
+        <canvas class="marketcap-chart-canvas" id="chart-corechain"></canvas>
+      </div>
+      <!-- More coins can be dynamically inserted here -->
+    </div>
+    <div id="marketcap-fullchart-container" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img id="marketcap-fullchart-icon" src="" alt="" style="width:44px;height:44px;">
+        <span id="marketcap-fullchart-title"></span>
+      </div>
+      <canvas id="priceChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Signup Section -->
+  <div id="signup" style="display:none;">
+    <form id="signupForm" onsubmit="event.preventDefault();submitSignup();">
+      <h3>Create Your Bankerz Account</h3>
+      <input id="signupName" placeholder="Full Name" required />
+      <label>Residence:</label>
+      <select id="signupResidence"></select>
+      <label>Age:</label>
+      <select id="signupAge"></select>
+      <button type="submit">Create Account</button>
+      <button type="button" onclick="showSection('bank')">Cancel</button>
+    </form>
+  </div>
+
+  <!-- Platformer Game Section -->
+  <div id="platformer" style="display:none;">
+    <div class="platformer-header-row">
+      <img src="assets/file_000000000348622fa8844bb639749a11.png" alt="Crypto Platformer Logo" class="platformer-logo" />
+      <span class="platformer-title">Crypto Platformer</span>
+    </div>
+    <div class="platformer-game-container">
+      <div class="platformer-info">
+        <h3>Collect Crypto Coins & Earn Real Money!</h3>
+        <p>Navigate through levels collecting crypto coins. Each coin you collect adds $5 to your bank account!</p>
+        <p><strong>Controls:</strong> Arrow Keys or WASD to move, Space to jump</p>
+      </div>
+      <div class="platformer-canvas-container">
+        <canvas id="platformerCanvas" width="800" height="400"></canvas>
+      </div>
+      <div class="platformer-controls">
+        <button class="platformer-btn" onclick="resetPlatformer()">Reset Game</button>
+        <button class="platformer-btn" onclick="showSection('results')">Back to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Whitepaper: Solvex -->
+  <div id="whitepaper-solvex" class="whitepaper-section" style="display:none; padding:24px; max-width:750px; margin:auto; position:relative;">
+    <button class="whitepaper-close-btn" onclick="showSection('results')" title="Close Whitepaper">&times;</button>
+    <h2>Solvex Whitepaper</h2>
+    <!-- ... (whitepaper content as previously given) ... -->
+  </div>
+  <div id="whitepaper-neurax" class="whitepaper-section" style="display:none; padding:24px; max-width:750px; margin:auto; position:relative;">
+    <button class="whitepaper-close-btn" onclick="showSection('results')" title="Close Whitepaper">&times;</button>
+    <h2>NeuraX Whitepaper</h2>
+    <!-- ... (whitepaper content as previously given) ... -->
+  </div>
+  <div id="whitepaper-corechain" class="whitepaper-section" style="display:none; padding:24px; max-width:750px; margin:auto; position:relative;">
+    <button class="whitepaper-close-btn" onclick="showSection('results')" title="Close Whitepaper">&times;</button>
+    <h2>Corechain Whitepaper</h2>
+    <!-- ... (whitepaper content as previously given) ... -->
+  </div>
+
+  <!-- Transaction History Modal -->
+  <div id="transaction-history-modal" class="bank-modal" style="display:none;">
+    <div class="transaction-history-content">
+      <div class="transaction-history-header">
+        Transaction History
+        <button class="close-btn" onclick="closeTransactionHistory()">&times;</button>
+      </div>
+      <div id="transaction-history-list"></div>
+    </div>
+  </div>
+
+  <!-- Bank Withdraw Modal -->
+  <div id="bank-withdraw-modal" class="bank-modal" style="display:none;">
+    <div class="bank-modal-content">
+      <div class="bank-modal-header">
+        Withdraw Funds
+        <button class="close-btn" onclick="closeWithdrawModal()">&times;</button>
+      </div>
+      <input id="withdrawAmount" type="number" min="1" placeholder="Amount" />
+      <button type="submit" onclick="submitWithdraw()">Withdraw</button>
+    </div>
+  </div>
+
+  <!-- Bank Deposit Modal -->
+  <div id="bank-deposit-modal" class="bank-modal" style="display:none;">
+    <div class="bank-modal-content">
+      <div class="bank-modal-header">
+        Deposit Funds
+        <button class="close-btn" onclick="closeDepositModal()">&times;</button>
+      </div>
+      <input id="depositAmount" type="number" min="1" placeholder="Amount" />
+      <button type="submit" onclick="submitDeposit()">Deposit</button>
+    </div>
+  </div>
+
+  <!-- Bank Send Money Modal -->
+  <div id="bank-sendmoney-modal" class="bank-modal" style="display:none;">
+    <div class="bank-modal-content">
+      <div class="bank-modal-header">
+        Send Money
+        <button class="close-btn" onclick="closeSendMoneyModal()">&times;</button>
+      </div>
+      <input id="sendRecipient" type="text" value="CoinFlip Exchange" disabled />
+      <input id="sendAmount" type="number" min="1" placeholder="Amount" />
+      <button type="submit" onclick="submitSendMoney()">Send</button>
+    </div>
+  </div>
+
+  <!-- Exchange Send Bank Modal -->
+  <div id="exchange-sendbank-modal" class="bank-modal" style="display:none;">
+    <div class="bank-modal-content">
+      <div class="bank-modal-header">
+        Send to Bank
+        <button class="close-btn" onclick="closeExchangeSendBankModal()">&times;</button>
+      </div>
+      <input id="exchangeSendRecipient" type="text" value="Bankerz" disabled />
+      <input id="exchangeSendAmount" type="number" min="1" placeholder="Amount" />
+      <button type="submit" onclick="submitExchangeSendBank()">Send</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</div>
+</body>
+</html>
